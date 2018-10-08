@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>R과 DB 어딘가에 결국 자료형을 다루어야 한다</title>
+    <meta charset="utf-8">
+    <meta name="author" content="박찬엽" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome-animation/font-awesome-animation-emi.css" rel="stylesheet" />
+    <script src="libs/fontawesome/js/fontawesome-all.min.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-47822682-14', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: center, middle, title-slide, inverse
+
+## R과 DB 어딘가에 결국 자료형을 다루어야 한다
+
+### &lt;https://mrchypark.github.io/datetimeR&gt;
+
+#### [[pdf버전]](https://github.com/mrchypark/datetimeR/blob/master/docs/datetimeR.pdf) [[문의하기]](http://pf.kakao.com/_RXANd) [[의견 및 오류 신고]](https://github.com/mrchypark/datetimeR/issues/new)
+#### [스타누르기](https://github.com/mrchypark/datetimeR)는 컨텐츠 제작자를 춤추게 합니다.
+
+### 박찬엽
+
+### 2018년 10월 19일
+---
+class: inverse
+## 목차
+
+.pull-left[
+1. 발표자 소개
+
+2. 모던 R 프로그래밍 with [tidyverse](https://www.tidyverse.org/)
+    - 파이프 연산자 `%&gt;%` [magrittr](https://magrittr.tidyverse.org/)
+    - tidyverse의 중심 - [dplyr](https://dplyr.tidyverse.org/)
+    
+3. [DBI](https://dbi.r-dbi.org/)와 함께 *dplyr*로 데이터 다루기
+    - [RPostgres](https://github.com/r-dbi/RPostgres) vs [RPostgreSQL](https://github.com/tomoakin/RPostgreSQL)
+    
+4. 날짜 자료형을 다루는 [lubridate](https://github.com/tidyverse/lubridate)
+    - timezone 문제
+]
+
+--
+
+.pull-right[
+&lt;br&gt;
+&lt;br&gt;
+
+<span>&lt;i class="fas  fa-leaf faa-bounce animated "&gt;&lt;/i&gt;</span>  협업을 위해      
+
+  - [writexl](https://github.com/ropensci/writexl) vs [openxlsx](https://github.com/awalker89/openxlsx)
+  - [googledrive](https://googledrive.tidyverse.org/)
+  - [sendgridr](https://mrchypark.github.io/sendgridr/)
+]
+
+
+---
+
+class: center, middle, title-slide, inverse
+
+
+## [발표자 소개][intro]
+
+---
+
+class: inverse
+
+
+[intro]: https://mrchypark.github.io/self-introduce/#1
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
