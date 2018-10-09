@@ -266,16 +266,6 @@ popular_dests %>%
 ```
 
 ---
-
-class: center, middle, title-slide, inverse
-
-## DBI
-
-## Database with R
-
-![](https://avatars2.githubusercontent.com/u/5695665?s=200&v=4)
-
----
 class: center, middle, title-slide, inverse
 
 ## R `r anicon::faa("heart", animate="bounce", color="red")` Database
