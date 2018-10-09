@@ -421,7 +421,6 @@ class: inverse
 ```
 
 ---
-
 class: center, middle, title-slide, inverse
 
 ## 헷갈리기 딱 좋음
@@ -457,6 +456,25 @@ as_datetime(x, tz = "KST")
 ##  Error in C_force_tz(time, tz = tzone, roll) : 
 ##    CCTZ: Unrecognized output timezone: "KST"
 ```
+
+---
+class: center, middle, title-slide, inverse
+
+## 협업을 위한 패키지들
+
+---
+class: inverse
+
+## 엑셀로 저장하기
+
+---
+class: inverse
+
+## 구글 드라이브
+---
+class: inverse
+
+## 메일 보내기
 
 [1]: https://github.com/tidyverse/tidyverse
 [2]: https://mrchypark.github.io/kisa_finR
