@@ -774,6 +774,10 @@ class: center, middle, title-slide, inverse
 ![](https://github.com/tidyverse/lubridate/raw/master/man/figures/logo.png)
 
 ---
+class: inverse, middle
+
+![](https://raw.githubusercontent.com/rstudio/cheatsheets/master/pngs/thumbnails/lubridate-cheatsheet-thumbs.png)
+---
 
 class: inverse
 
@@ -782,13 +786,13 @@ class: inverse
 
 ```r
 library(lubridate)
-x &lt;- "2018-01-01 12:00:00"
+x &lt;- c("2018-01-01 12:00:00", "2018/1/1 12.00.00")
 
 as_datetime(x)
 ```
 
 ```
-## [1] "2018-01-01 12:00:00 UTC"
+## [1] "2018-01-01 12:00:00 UTC" "2018-01-01 12:00:00 UTC"
 ```
 
 ```r
@@ -796,14 +800,17 @@ ymd_hms(x)
 ```
 
 ```
-## [1] "2018-01-01 12:00:00 UTC"
+## [1] "2018-01-01 12:00:00 UTC" "2018-01-01 12:00:00 UTC"
 ```
 
 ---
 
 class: inverse
 
-## timezone을 바꿔봅시다.
+## 시간을 바꿔보자
+
+.pull-left[
+시간을 +9 해보자
 
 
 ```r
@@ -815,19 +822,34 @@ as_datetime(x)
 ```
 
 ```r
-as_datetime(x, tz = "Asia/Seoul")
+as_datetime(x) + hours(9)
 ```
 
 ```
-## [1] "2018-01-01 12:00:00 KST"
+## [1] "2018-01-01 21:00:00 UTC"
 ```
+]
+--
+.pull-right[
+타임존을 바꿔보자
+
+
 ```r
-as_datetime(x, tz = "KST")
+as_datetime(x)
 ```
+
 ```
-##  Error in C_force_tz(time, tz = tzone, roll) : 
-##    CCTZ: Unrecognized output timezone: "KST"
+## [1] "2018-01-01 12:00:00 UTC"
 ```
+
+```r
+as_datetime(x) %&gt;% with_tz("Asia/Seoul")
+```
+
+```
+## [1] "2018-01-01 21:00:00 KST"
+```
+]
 
 ---
 class: center, middle, title-slide, inverse
