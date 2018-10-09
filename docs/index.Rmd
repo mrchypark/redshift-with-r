@@ -535,6 +535,12 @@ class: inverse
 
 tibble 내의 dbl, integer, integer64
 
+
+---
+class: center, middle, title-slide, inverse
+
+## 거래소는 24시간이 모자라
+
 ---
 
 class: center, middle, title-slide, inverse
@@ -546,6 +552,15 @@ class: center, middle, title-slide, inverse
 ![](https://github.com/tidyverse/lubridate/raw/master/man/figures/logo.png)
 
 
+---
+class: inverse
+
+## 날짜 자료형이 어려워서 사실
+
+```{r}
+library(nycflights13)
+flights
+```
 ---
 class: inverse
 
