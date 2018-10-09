@@ -454,7 +454,8 @@ conn &lt;- dbConnect(SQLite(),
 
 copy_to(conn
         , flights
-        , name = 'flights')
+        , name = 'flights'
+        , overwrite = T)
 dbListTables(conn)
 ```
 
@@ -874,10 +875,47 @@ library(openxlsx)
 library(writexl)
 ```
 
+
+```r
+library(microbenchmark)
+library(nycflights13)
+microbenchmark(
+  writexl = writexl::write_xlsx(flights, tempfile()),
+  openxlsx = openxlsx::write.xlsx(flights, tempfile()),
+  times = 5
+)
+```
+
+```
+## Unit: seconds
+##      expr      min        lq     mean    median        uq       max neval
+##   writexl  26.6437  26.80331  29.7129  28.32654  33.10113  33.68985     5
+##  openxlsx 115.6457 117.87030 122.9255 120.88278 125.81904 134.40948     5
+```
+
+```r
+writexl::write_xlsx(flights, tmp1 &lt;- tempfile())
+file.info(tmp1)$size
+```
+
+```
+## [1] 29164313
+```
+
+```r
+openxlsx::write.xlsx(flights, tmp2 &lt;- tempfile())
+file.info(tmp2)$size
+```
+
+```
+## [1] 26832297
+```
 ---
 class: inverse
 
 ## 구글 드라이브
+
+엑셀 파일 업로드 / 데이터 소스로써 googledrive
 
 ```r
 library(googledrive)
@@ -887,6 +925,10 @@ library(googledrive)
 class: inverse
 
 ## 메일 보내기
+
+rmd로 작성한 보고서 전송
+
+구글에서 이미지를 제거해서 임시로 html을 첨부하는 형태로 우회중
 
 ```r
 library(sendgridr)
