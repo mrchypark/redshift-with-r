@@ -23,7 +23,7 @@
 
 
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## R과 DB 어딘가에 결국 자료형을 다루어야 한다
 
@@ -36,7 +36,7 @@ class: center, middle, title-slide, inverse
 
 ### 2018년 10월 19일
 ---
-class: inverse
+class: 
 ## 목차
 
 .pull-left[
@@ -69,14 +69,14 @@ class: inverse
 
 ---
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 
 ## [발표자 소개][intro]
 
 ---
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 모던 R 프로그래밍이란
 
@@ -85,7 +85,7 @@ class: center, middle, title-slide, inverse
 [![](https://github.com/tidyverse/tidyverse/raw/master/man/figures/logo.png)][1]
 
 ---
-class: inverse
+class: 
 ## [tidyverse][1] 패키지는
 
 .pull-left[
@@ -108,7 +108,7 @@ library(tidyverse)
 &lt;img src = "https://lsru.github.io/tv_course/img/01_tidyverse_data_science.png" width=100%&gt;
 ]
 ---
-class: inverse
+class: 
 ## tidy data 란
 
 1. [Hadley Wickham](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)  2. [고감자님의 블로그](http://freesearch.pe.kr/archives/3942)  3. [헬로우데이터과학](http://www.hellodatascience.com/?p=287)
@@ -130,7 +130,7 @@ class: inverse
   \* 출처 : [금융데이터 분석을 위한 R 입문][2]
 ]
 ---
-class: inverse
+class: 
 ## tidy data 란
 
 ![](http://garrettgman.github.io/images/tidy-1.png)
@@ -140,7 +140,7 @@ class: inverse
 ]
 
 ---
-class: inverse
+class: 
 ## long form vs wide form
 
 .pull-left[
@@ -160,14 +160,14 @@ class: inverse
 
 ---
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## tidyverse의 중심: [dplyr](https://dplyr.tidyverse.org/)
 
 ![](https://github.com/tidyverse/dplyr/raw/master/man/figures/logo.png)
 
 ---
-class: inverse
+class: 
 
 ## 데이터를 다루는 주요 7가지 동작
 
@@ -191,7 +191,7 @@ class: inverse
 
 ---
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 함수를 연결하는 파이프 연산자(%&gt;%)
 
@@ -199,7 +199,7 @@ class: center, middle, title-slide, inverse
 
 ---
 
-class: inverse
+class: 
 ## 파이프 연산자(%&gt;%)
 
 함수를 중첩해서 사용할 일이 점점 빈번해 짐
@@ -209,7 +209,7 @@ plot(diff(log(sample(rnorm(10000,mean=10,sd=1),size=100,replace=FALSE))),col="re
 ```
 
 --
-class: inverse
+class: 
 ### %&gt;%를 사용하면 
 
 .pull-left[
@@ -228,7 +228,7 @@ rnorm(10000,mean=10,sd=1) %&gt;%
 ```
 ]
 ---
-class: inverse
+class: 
 
 ## 파이프 연산자(%&gt;%)
 
@@ -259,7 +259,7 @@ flights %&gt;%
 ## # ... with 355 more rows
 ```
 ---
-class: inverse
+class: 
 ## 파이프 연산자(%&gt;%)
 
 group_by()는 filter()와도 함께 사용할 수 있음
@@ -294,7 +294,7 @@ popular_dests
 ```
 
 ---
-class: inverse
+class: 
 ## 파이프 연산자(%&gt;%)
 
 사용할 데이터부터 순서대로 함수를 작성할 수 있는 장점
@@ -326,12 +326,12 @@ popular_dests %&gt;%
 ```
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## R <span>&lt;i class="fas  fa-heart faa-bounce animated " style=" color:red;"&gt;&lt;/i&gt;</span> Database
 
 ---
-class: inverse
+class: 
 
 .pull-left[
 ## driver list .small[(DBI supported)]
@@ -365,19 +365,19 @@ class: inverse
 - ...
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## JDBC &amp; ODBC
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## DBI
 
 ![](https://d33wubrfki0l68.cloudfront.net/738885c8f54f3ab6118545469c28cd6635fcd656/96e0d/homepage/interact.png)
 
 ---
-class: inverse
+class: 
 
 ## .blue[redshift]
 
@@ -386,7 +386,7 @@ class: inverse
 ]
 
 ---
-class: inverse
+class: 
 
 ## .blue[redshift] is almost Postgresql
 
@@ -396,21 +396,21 @@ class: inverse
 ]
 
 ---
-class: inverse
+class: 
 
 ## driver package
 
 ### RPostgreSQL
 
 ---
-class: inverse
+class: 
 
 ## driver package
 
 ### RPostgres
 
 ---
-class: inverse
+class: 
 
 ## redshift에 연결해보자
 
@@ -426,7 +426,7 @@ con &lt;- dbConnect(Postgres(),
                  dbname = "dbname")
 ```
 ---
-class: inverse
+class: 
 
 ## 데이터 소스로서 DBI
 
@@ -439,7 +439,7 @@ library(dbplyr)
 ```
 
 ---
-class: inverse
+class: 
 # R 데이터를 DB 테이블로 만들기 copy_to()
 
 copy_to()는 DBI의 dbWriteTable()과 같은 기능을 수행. dplyr 패키지에 속한 copy_to()는 성능 개선을 통해 dbWriteTable() 보다 빠른 속도를 제공함
@@ -464,7 +464,7 @@ dbListTables(conn)
 ```
 
 ---
-class: inverse
+class: 
 ## 테이블의 연결정보를 R 객체에 저장 - tbl()
 
 dbplyr과 DBI, dplyr로 데이터베이스의 테이블을 dplyr 문법으로 다루기 위해서는 DBI 패키지에서 conn 객체와 같이 테이블의 연결정보를 담고 있는 R 객체가 필요. tbl()는 DB내 테이블 연결정보를 R 객체로 만드는 함수
@@ -497,7 +497,7 @@ tb_flights
 ```
 
 ---
-class: inverse
+class: 
 ### collect()
 
 collect()는 DB에 전달하는 명령의 최종 결과를 R 객체로 가져오는 역할을 수행합니다.
@@ -559,7 +559,7 @@ tb_flights %&gt;%
 ```
 ]
 ---
-class: inverse
+class: 
 ### 결과를 테이블로 저장 - compute()
 
 compute()는 collect()와는 달리 연산된 결과를 R 객체로 저장하는 것이 아니라 새로 이름지은 테이블로 DB에 저장하는 동작을 수행
@@ -597,7 +597,7 @@ tb_flights %&gt;%
 # ... with more rows
 ```
 ---
-class: inverse
+class: 
 ### show_query()
 
 show_query()는 dplyr로 구성된 함수의 연결이 query문으로 어떻게 변환되는지를 보여줌
@@ -622,26 +622,26 @@ FROM (SELECT `TBL_LEFT`.`tailnum` AS `tailnum`, `TBL_LEFT`.`count` AS `count`, `
 ORDER BY `total_distance` DESC)
 ```
 ---
-class: inverse
+class: 
 
 ## 역시 패키지는 배신한다 .small[(aka 오해)]
 
 ---
-class: inverse
+class: 
 
 ## 숫자 자료형이 늘어났다!?
 
 ### integer64
 
 ---
-class: inverse
+class: 
 
 ## numeric
 
 base R의 숫자 자료형
 
 ---
-class: inverse
+class: 
 
 ## 모던 R 패키지에서는
 
@@ -649,12 +649,12 @@ tibble 내의 dbl, integer, integer64
 
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 거래소는 24시간이 .yellow[모자라]
 
 ---
-class: inverse
+class: 
 
 ## 날짜 자료형이 어려워서 사실
 
@@ -684,7 +684,7 @@ flights
 ## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;
 ```
 ---
-class: inverse
+class: 
 
 ## timezone
 
@@ -695,7 +695,7 @@ class: inverse
 ]
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 한국은?
 
@@ -709,7 +709,7 @@ class: center, middle, title-slide, inverse
 
 ---
 
-class: inverse
+class: 
 
 ## Timezones in base R
 
@@ -749,7 +749,7 @@ Sys.time()
 
 ---
 
-class: inverse
+class: 
 
 ## 우리의 DB는 UTC
 
@@ -760,13 +760,13 @@ class: inverse
 ```
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 헷갈리기 딱 좋음
 
 ---
 
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## .green[lubridate]
 
@@ -775,12 +775,12 @@ class: center, middle, title-slide, inverse
 ![](https://github.com/tidyverse/lubridate/raw/master/man/figures/logo.png)
 
 ---
-class: inverse, middle
+class: , middle
 
 ![](https://raw.githubusercontent.com/rstudio/cheatsheets/master/pngs/thumbnails/lubridate-cheatsheet-thumbs.png)
 ---
 
-class: inverse
+class: 
 
 ## lubridate
 
@@ -806,7 +806,7 @@ ymd_hms(x)
 
 ---
 
-class: inverse
+class: 
 
 ## 시간을 바꿔보자
 
@@ -853,7 +853,7 @@ as_datetime(x) %&gt;% with_tz("Asia/Seoul")
 ]
 
 ---
-class: inverse
+class: 
 
 ## 느낀 점
 
@@ -861,12 +861,12 @@ class: inverse
 - ...
 
 ---
-class: center, middle, title-slide, inverse
+class: center, middle, title-slide, 
 
 ## 협업을 위한 패키지들
 
 ---
-class: inverse
+class: 
 
 ## 엑셀로 저장하기
 
@@ -911,7 +911,7 @@ file.info(tmp2)$size
 ## [1] 26832297
 ```
 ---
-class: inverse
+class: 
 
 ## 구글 드라이브
 
@@ -922,7 +922,7 @@ library(googledrive)
 ```
 
 ---
-class: inverse
+class: 
 
 ## 메일 보내기
 
