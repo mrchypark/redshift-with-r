@@ -308,7 +308,7 @@ class: inverse
 - MySQL(+MariaDB)
 - bigquery
 - Oracle
-- etc
+- ...
 ]
 .pull-right[
 ## +noDBI .small[supported]
@@ -318,7 +318,7 @@ class: inverse
 - CouchDB
 - Elasticsearch 
 - etcd 
-- etc
+- ...
 
 ]
 
@@ -330,7 +330,7 @@ class: inverse
 - HDFS
 - MapR-FS
 - Amazon S3
-- etc
+- ...
 
 ---
 class: center, middle, title-slide, inverse
