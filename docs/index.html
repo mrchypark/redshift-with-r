@@ -420,6 +420,243 @@ class: inverse
 ### RPostgres
 
 ---
+class: inverse
+
+## redshift에 연결해보자
+
+```r
+# install.packages("remotes")
+remotes::install_github("r-dbi/RPostgres")
+library(DBI)
+con &lt;- dbConnect(Postgres(),
+                 user = user,
+                 password = pw,
+                 host = host,
+                 port = port,
+                 dbname = "dbname")
+```
+---
+class: inverse
+
+## 데이터 소스로서 DBI
+
+DBI 패키지가 연결하는 database의 연결정보를 바탕으로 dplyr 문법을 사용할 수 있습니다. 그렇게 하기 위해서는 dbplyr 패키지가 필요합니다.
+
+
+```r
+if (!requireNamespace("dbplyr")) install.packages("dbplyr")
+library(dbplyr)
+```
+
+---
+class: inverse
+# R 데이터를 DB 테이블로 만들기 copy_to()
+
+copy_to()는 DBI의 dbWriteTable()과 같은 기능을 수행. dplyr 패키지에 속한 copy_to()는 성능 개선을 통해 dbWriteTable() 보다 빠른 속도를 제공함
+
+
+```r
+library(RSQLite)
+library(nycflights13)
+
+conn &lt;- dbConnect(SQLite(),
+                  ":memory:")
+
+copy_to(conn
+        , flights
+        , name = 'flights')
+dbListTables(conn)
+```
+
+```
+## [1] "flights"      "sqlite_stat1" "sqlite_stat4"
+```
+
+---
+class: inverse
+## 테이블의 연결정보를 R 객체에 저장 - tbl()
+
+dbplyr과 DBI, dplyr로 데이터베이스의 테이블을 dplyr 문법으로 다루기 위해서는 DBI 패키지에서 conn 객체와 같이 테이블의 연결정보를 담고 있는 R 객체가 필요. tbl()는 DB내 테이블 연결정보를 R 객체로 만드는 함수
+
+
+```r
+tb_flights &lt;- tbl(conn, "flights")
+tb_flights
+```
+
+```
+## # Source:   table&lt;flights&gt; [?? x 19]
+## # Database: sqlite 3.22.0 [:memory:]
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;, tailnum &lt;chr&gt;,
+## #   origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
+## #   minute &lt;dbl&gt;, time_hour &lt;dbl&gt;
+```
+
+---
+class: inverse
+### collect()
+
+collect()는 DB에 전달하는 명령의 최종 결과를 R 객체로 가져오는 역할을 수행합니다.
+
+.pull-left[
+```r
+tb_flights %&gt;%
+  group_by(carrier) %&gt;%
+  summarise(count = n())
+```
+```
+# Source:   lazy query [?? x 2]
+# Database: sqlite 3.22.0 [:memory:]
+   carrier count
+   &lt;chr&gt;   &lt;int&gt;
+ 1 9E      18460
+ 2 AA      32729
+ 3 AS        714
+ 4 B6      54635
+ 5 DL      48110
+ 6 EV      54173
+ 7 F9        685
+ 8 FL       3260
+ 9 HA        342
+10 MQ      26397
+# ... with more rows
+```
+]
+
+.pull-right[
+
+```r
+tb_flights %&gt;%
+  group_by(carrier) %&gt;%
+  summarise(count = n()) %&gt;%
+  collect()
+```
+
+```
+## # A tibble: 16 x 2
+##    carrier count
+##    &lt;chr&gt;   &lt;int&gt;
+##  1 9E      18460
+##  2 AA      32729
+##  3 AS        714
+##  4 B6      54635
+##  5 DL      48110
+##  6 EV      54173
+##  7 F9        685
+##  8 FL       3260
+##  9 HA        342
+## 10 MQ      26397
+## 11 OO         32
+## 12 UA      58665
+## 13 US      20536
+## 14 VX       5162
+## 15 WN      12275
+## 16 YV        601
+```
+]
+---
+class: inverse
+### 결과를 테이블로 저장 - compute()
+
+compute()는 collect()와는 달리 연산된 결과를 R 객체로 저장하는 것이 아니라 새로 이름지은 테이블로 DB에 저장하는 동작을 수행
+
+```r
+dbListTables(conn)
+```
+```
+[1] "flights"      "sqlite_stat1" "sqlite_stat4"
+```
+```r
+tb_flights %&gt;%
+  group_by(tailnum) %&gt;%
+  summarise(count=n(),
+            mean_distance = mean(distance, na.rm = TRUE),
+            total_distance = sum(distance, na.rm = TRUE)) %&gt;%
+  filter(!is.na(tailnum)) %&gt;%
+  compute(name = 'planes_distance')
+```
+```
+# Source:   table&lt;planes_distance&gt; [?? x 4]
+# Database: sqlite 3.22.0 [:memory:]
+   tailnum count mean_distance total_distance
+   &lt;chr&gt;   &lt;int&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+ 1 D942DN      4          854.           3418
+ 2 N0EGMQ    371          676.         250866
+ 3 N10156    153          758.         115966
+ 4 N102UW     48          536.          25722
+ 5 N103US     46          535.          24619
+ 6 N104UW     47          535.          25157
+ 7 N10575    289          520.         150194
+ 8 N105UW     45          525.          23618
+ 9 N107US     41          529.          21677
+10 N108UW     60          534.          32070
+# ... with more rows
+```
+---
+class: inverse
+### show_query()
+
+show_query()는 dplyr로 구성된 함수의 연결이 query문으로 어떻게 변환되는지를 보여줌
+
+```r
+copy_to(conn, planes, name = 'planes', temporary = FALSE)
+tbl(conn, 'planes_distance') %&gt;%
+  inner_join(tbl(conn, 'planes'), by='tailnum') %&gt;%
+  arrange(desc(total_distance)) %&gt;%
+  select(total_distance, manufacturer, model) %&gt;%
+  show_query()
+```
+```sql
+&lt;SQL&gt;
+SELECT `total_distance`, `manufacturer`, `model`
+FROM (SELECT *
+FROM (SELECT `TBL_LEFT`.`tailnum` AS `tailnum`, `TBL_LEFT`.`count` AS `count`, `TBL_LEFT`.`mean_distance` AS `mean_distance`, `TBL_LEFT`.`total_distance` AS `total_distance`, `TBL_RIGHT`.`year` AS `year`, `TBL_RIGHT`.`type` AS `type`, `TBL_RIGHT`.`manufacturer` AS `manufacturer`, `TBL_RIGHT`.`model` AS `model`, `TBL_RIGHT`.`engines` AS `engines`, `TBL_RIGHT`.`seats` AS `seats`, `TBL_RIGHT`.`speed` AS `speed`, `TBL_RIGHT`.`engine` AS `engine`
+  FROM `planes_distance` AS `TBL_LEFT`
+  INNER JOIN `planes` AS `TBL_RIGHT`
+  ON (`TBL_LEFT`.`tailnum` = `TBL_RIGHT`.`tailnum`)
+)
+ORDER BY `total_distance` DESC)
+```
+---
+class: inverse
+
+## 역시 패키지는 배신한다 .small[(aka 오해)]
+
+---
+class: inverse
+
+## 숫자 자료형이 늘어났다!?
+
+### integer64
+
+---
+class: inverse
+
+## numeric
+
+base R의 숫자 자료형
+
+---
+class: inverse
+
+## 모던 R 패키지에서는
+
+tibble 내의 dbl, integer, integer64
+
+---
 
 class: center, middle, title-slide, inverse
 
@@ -491,7 +728,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2018-10-09 16:06:58 KST"
+## [1] "2018-10-09 17:09:57 KST"
 ```
 
 ---

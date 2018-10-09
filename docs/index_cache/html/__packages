@@ -11,3 +11,6 @@ forcats
 nycflights13
 bindrcpp
 lubridate
+dbplyr
+RSQLite
+microbenchmark
