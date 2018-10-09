@@ -658,6 +658,14 @@ as_datetime(x) %>% with_tz("Asia/Seoul")
 ]
 
 ---
+class: inverse
+
+## 느낀 점
+
+- 역시 삽질
+- ...
+
+---
 class: center, middle, title-slide, inverse
 
 ## 협업을 위한 패키지들
@@ -689,14 +697,6 @@ class: inverse
 ```r
 library(sendgridr)
 ```
-
----
-class: inverse
-
-## 느낀 점
-
-- 역시 삽질
-- ...
 
 [1]: https://github.com/tidyverse/tidyverse
 [2]: https://mrchypark.github.io/kisa_finR
