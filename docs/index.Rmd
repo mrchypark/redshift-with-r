@@ -43,6 +43,7 @@ class: inverse
 1. 발표자 소개
 
 2. 모던 R 프로그래밍 with [tidyverse](https://www.tidyverse.org/)
+    - tidy 란
     - tidyverse의 중심: [dplyr](https://dplyr.tidyverse.org/)
     - 파이프 연산자 `%>%` [magrittr](https://magrittr.tidyverse.org/)
     
@@ -65,7 +66,6 @@ class: inverse
   - [googledrive](https://googledrive.tidyverse.org/)
   - [sendgridr](https://mrchypark.github.io/sendgridr/)
 ]
-
 
 ---
 
@@ -161,6 +161,37 @@ class: inverse
 
 class: center, middle, title-slide, inverse
 
+## tidyverse의 중심: [dplyr](https://dplyr.tidyverse.org/)
+
+![](https://github.com/tidyverse/dplyr/raw/master/man/figures/logo.png)
+
+---
+class: inverse
+
+## 데이터를 다루는 주요 7가지 동작
+
+.pull-left[
+[dplyr](https://dplyr.tidyverse.org/)은 데이터를 다루는 주요 7가지 동작 자체를 함수로 가지고 추가적인 helper 함수를 함께 제공
+
+1. 열 방향: 선택 - select()
+1. 열 방향: 계산 - mutate()
+1. 행 방향: 조건 - filter()
+1. 행 방향: 추가 - bind_rows()
+1. 행 방향: 정렬 - arrange()
+1. 그룹 계산 - group_by() + summarise()
+1. 열 결합 - left_join()
+]
+.pull-right[
+![](https://raw.githubusercontent.com/mrchypark/dabrp_classnote3/master/docs/img/dplyr.png) 
+]
+
+---
+![](https://raw.githubusercontent.com/mrchypark/dabrp_classnote3/master/docs/img/dplyr.png)
+
+---
+
+class: center, middle, title-slide, inverse
+
 ## 함수를 연결하는 파이프 연산자(%>%)
 
 ![](https://raw.githubusercontent.com/mrchypark/dabrp_classnote3/master/docs/img/pipes.png)
@@ -242,8 +273,190 @@ class: center, middle, title-slide, inverse
 
 ## Database with R
 
+![](https://avatars2.githubusercontent.com/u/5695665?s=200&v=4)
 
 ---
+class: inverse
+
+## .blue[redshift]
+
+.pull-left[
+<img src=https://data.world/api/datadotworld-apps/dataset/redshift/file/raw/logo.png width=80%>
+]
+
+---
+class: inverse
+
+## .blue[redshift] is almost Postgresql
+
+.pull-right[
+<br>
+<img src = https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png width=60%>
+]
+---
+class: center, middle, title-slide, inverse
+
+## .blue[R] loves PostgreSQL(database)
+
+
+---
+class: inverse
+
+.pull-left[
+## driver list .small[(DBI supported)]
+
+- SQLite
+- MySQL(+MariaDB)
+- bigquery
+- Oracle
+- etc
+]
+.pull-right[
+## +noDBI .small[supported]
+
+- MongoDB
+- Redis
+- CouchDB
+- Elasticsearch 
+- etcd 
+- etc
+
+]
+
+--
+## + sergeant .small[(with Apache Drill)]
+
+- HBase
+- MapR-DB
+- HDFS
+- MapR-FS
+- Amazon S3
+- etc
+
+---
+class: center, middle, title-slide, inverse
+
+## JDBC & ODBC
+
+---
+class: center, middle, title-slide, inverse
+
+## DBI
+
+![](https://d33wubrfki0l68.cloudfront.net/738885c8f54f3ab6118545469c28cd6635fcd656/96e0d/homepage/interact.png)
+
+---
+class: inverse
+
+## driver package
+
+### RPostgreSQL
+
+---
+class: inverse
+
+## driver package
+
+### RPostgres
+
+---
+
+class: center, middle, title-slide, inverse
+
+## .green[lubridate]
+
+## datetime in R
+
+![](https://github.com/tidyverse/lubridate/raw/master/man/figures/logo.png)
+
+
+---
+class: inverse
+
+## timezone
+
+.pull-center[
+  .set[
+    ![](https://c.tadst.com/gfx/tzmap/map.1538884800.png?1174)  
+  ]
+]
+
+---
+class: center, middle, title-slide, inverse
+
+## 한국은?
+
+--
+
+### Asia/Seoul(KST)
+
+--
+
+### UTC(협정 세계시) + 9시간
+
+---
+
+class: inverse
+
+## Timezones in base R
+
+```{r}
+x <- "2018-01-01 06:00:00"
+as.POSIXct(x)
+as.POSIXct(x, tz = "Asia/Seoul")
+Sys.timezone()
+Sys.time()
+```
+
+---
+
+class: inverse
+
+## 우리의 DB는 UTC
+
+데이터 베이스에서 가져온 날짜를 as.Date
+
+```
+코드와 결과 예시
+```
+
+---
+
+class: center, middle, title-slide, inverse
+
+## 헷갈리기 딱 좋음
+
+---
+
+class: inverse
+
+## lubridate
+
+```{r}
+library(lubridate)
+x <- "2018-01-01 12:00:00"
+
+as_datetime(x)
+ymd_hms(x)
+```
+
+---
+
+class: inverse
+
+## timezone을 바꿔봅시다.
+
+```{r}
+as_datetime(x)
+as_datetime(x, tz = "Asia/Seoul")
+```
+```r
+as_datetime(x, tz = "KST")
+```
+```
+##  Error in C_force_tz(time, tz = tzone, roll) : 
+##    CCTZ: Unrecognized output timezone: "KST"
+```
 
 [1]: https://github.com/tidyverse/tidyverse
 [2]: https://mrchypark.github.io/kisa_finR

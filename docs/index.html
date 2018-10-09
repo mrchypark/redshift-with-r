@@ -43,8 +43,9 @@ class: inverse
 1. 발표자 소개
 
 2. 모던 R 프로그래밍 with [tidyverse](https://www.tidyverse.org/)
+    - tidy 란
+    - tidyverse의 중심: [dplyr](https://dplyr.tidyverse.org/)
     - 파이프 연산자 `%&gt;%` [magrittr](https://magrittr.tidyverse.org/)
-    - tidyverse의 중심 - [dplyr](https://dplyr.tidyverse.org/)
     
 3. [DBI](https://dbi.r-dbi.org/)와 함께 *dplyr*로 데이터 다루기
     - [RPostgres](https://github.com/r-dbi/RPostgres) vs [RPostgreSQL](https://github.com/tomoakin/RPostgreSQL)
@@ -66,7 +67,6 @@ class: inverse
   - [sendgridr](https://mrchypark.github.io/sendgridr/)
 ]
 
-
 ---
 
 class: center, middle, title-slide, inverse
@@ -80,7 +80,7 @@ class: center, middle, title-slide, inverse
 
 ## 모던 R 프로그래밍이란
 
-# tidy data + universe 
+## tidy data + universe 
 
 [![](https://github.com/tidyverse/tidyverse/raw/master/man/figures/logo.png)][1]
 
@@ -157,6 +157,37 @@ class: inverse
 1. 2개 변수에 대한 값만 확인 가능
 1. dashboard 형이라고도 하며 조인 등 연산이 어려움
 ]
+
+---
+
+class: center, middle, title-slide, inverse
+
+## tidyverse의 중심: [dplyr](https://dplyr.tidyverse.org/)
+
+![](https://github.com/tidyverse/dplyr/raw/master/man/figures/logo.png)
+
+---
+class: inverse
+
+## 데이터를 다루는 주요 7가지 동작
+
+.pull-left[
+[dplyr](https://dplyr.tidyverse.org/)은 데이터를 다루는 주요 7가지 동작 자체를 함수로 가지고 추가적인 helper 함수를 함께 제공
+
+1. 열 방향: 선택 - select()
+1. 열 방향: 계산 - mutate()
+1. 행 방향: 조건 - filter()
+1. 행 방향: 추가 - bind_rows()
+1. 행 방향: 정렬 - arrange()
+1. 그룹 계산 - group_by() + summarise()
+1. 열 결합 - left_join()
+]
+.pull-right[
+![](https://raw.githubusercontent.com/mrchypark/dabrp_classnote3/master/docs/img/dplyr.png) 
+]
+
+---
+![](https://raw.githubusercontent.com/mrchypark/dabrp_classnote3/master/docs/img/dplyr.png)
 
 ---
 
@@ -294,6 +325,248 @@ popular_dests %&gt;%
 ## # ... with 131,096 more rows
 ```
 
+---
+
+class: center, middle, title-slide, inverse
+
+## DBI
+
+## Database with R
+
+![](https://avatars2.githubusercontent.com/u/5695665?s=200&amp;v=4)
+
+---
+class: inverse
+
+## .blue[redshift]
+
+.pull-left[
+&lt;img src=https://data.world/api/datadotworld-apps/dataset/redshift/file/raw/logo.png width=80%&gt;
+]
+
+---
+class: inverse
+
+## .blue[redshift] is almost Postgresql
+
+.pull-right[
+&lt;br&gt;
+&lt;img src = https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png width=60%&gt;
+]
+---
+class: center, middle, title-slide, inverse
+
+## .blue[R] loves PostgreSQL(database)
+
+
+---
+class: inverse
+
+.pull-left[
+## driver list .small[(DBI supported)]
+
+- SQLite
+- MySQL(+MariaDB)
+- bigquery
+- Oracle
+- etc
+]
+.pull-right[
+## +noDBI .small[supported]
+
+- MongoDB
+- Redis
+- CouchDB
+- Elasticsearch 
+- etcd 
+- etc
+
+]
+
+--
+## + sergeant .small[(with Apache Drill)]
+
+- HBase
+- MapR-DB
+- HDFS
+- MapR-FS
+- Amazon S3
+- etc
+
+---
+class: center, middle, title-slide, inverse
+
+## JDBC &amp; ODBC
+
+---
+class: center, middle, title-slide, inverse
+
+## DBI
+
+![](https://d33wubrfki0l68.cloudfront.net/738885c8f54f3ab6118545469c28cd6635fcd656/96e0d/homepage/interact.png)
+
+---
+class: inverse
+
+## driver package
+
+### RPostgreSQL
+
+---
+class: inverse
+
+## driver package
+
+### RPostgres
+
+---
+
+class: center, middle, title-slide, inverse
+
+## .green[lubridate]
+
+## datetime in R
+
+![](https://github.com/tidyverse/lubridate/raw/master/man/figures/logo.png)
+
+
+---
+class: inverse
+
+## timezone
+
+.pull-center[
+  .set[
+    ![](https://c.tadst.com/gfx/tzmap/map.1538884800.png?1174)  
+  ]
+]
+
+---
+class: center, middle, title-slide, inverse
+
+## 한국은?
+
+--
+
+### Asia/Seoul(KST)
+
+--
+
+### UTC(협정 세계시) + 9시간
+
+---
+
+class: inverse
+
+## Timezones in base R
+
+
+```r
+x &lt;- "2018-01-01 06:00:00"
+as.POSIXct(x)
+```
+
+```
+## [1] "2018-01-01 06:00:00 KST"
+```
+
+```r
+as.POSIXct(x, tz = "Asia/Seoul")
+```
+
+```
+## [1] "2018-01-01 06:00:00 KST"
+```
+
+```r
+Sys.timezone()
+```
+
+```
+## [1] "Asia/Seoul"
+```
+
+```r
+Sys.time()
+```
+
+```
+## [1] "2018-10-09 16:06:58 KST"
+```
+
+---
+
+class: inverse
+
+## 우리의 DB는 UTC
+
+데이터 베이스에서 가져온 날짜를 as.Date
+
+```
+코드와 결과 예시
+```
+
+---
+
+class: center, middle, title-slide, inverse
+
+## 헷갈리기 딱 좋음
+
+---
+
+class: inverse
+
+## lubridate
+
+
+```r
+library(lubridate)
+x &lt;- "2018-01-01 12:00:00"
+
+as_datetime(x)
+```
+
+```
+## [1] "2018-01-01 12:00:00 UTC"
+```
+
+```r
+ymd_hms(x)
+```
+
+```
+## [1] "2018-01-01 12:00:00 UTC"
+```
+
+---
+
+class: inverse
+
+## timezone을 바꿔봅시다.
+
+
+```r
+as_datetime(x)
+```
+
+```
+## [1] "2018-01-01 12:00:00 UTC"
+```
+
+```r
+as_datetime(x, tz = "Asia/Seoul")
+```
+
+```
+## [1] "2018-01-01 12:00:00 KST"
+```
+```r
+as_datetime(x, tz = "KST")
+```
+```
+##  Error in C_force_tz(time, tz = tzone, roll) : 
+##    CCTZ: Unrecognized output timezone: "KST"
+```
 
 [1]: https://github.com/tidyverse/tidyverse
 [2]: https://mrchypark.github.io/kisa_finR
