@@ -823,8 +823,6 @@ mail() %&gt;%
 
 windows의 자격증명관리자, mac의 Keychain 을 이용해 비밀 번호 등을 암호화 저정후 활용
 
-깃헙등에 잘못 올릴 일이 없음
-
 ```r
 keyring::key_set("key-name-to-use")
 con &lt;- dbConnect(RPostgres::Postgres(),
@@ -833,6 +831,8 @@ con &lt;- dbConnect(RPostgres::Postgres(),
                  user = 'postgres',
                  password = keyring::key_get("key-name-to-use"))
 ```
+
+*깃헙등에 잘못 올릴 일이 없음*
 
 ---
 class: center, middle, title-slide, 
