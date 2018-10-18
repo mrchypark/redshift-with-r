@@ -1,5 +1,5 @@
 ---
-title: "R과 DB 어딘가에 결국 자료형을 다루어야 한다"
+title: "redshift를 항해할 때 알아야할 상식사전(+협업)"
 author: "박찬엽"
 date: "2018년 10월 19일"
 output:
@@ -25,7 +25,7 @@ library(nycflights13)
 
 class: center, middle, title-slide, 
 
-## R과 DB 어딘가에 결국 자료형을 다루어야 한다
+## redshift를 항해할 때 알아야할 상식사전(+협업)
 
 ### <https://mrchypark.github.io/datetimeR>
 
