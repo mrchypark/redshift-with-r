@@ -1,5 +1,5 @@
 ---
-title: "redshift를 항해할 때 알아야할 상식사전(+협업)"
+title: "R과 redshift를 항해할 때 알아야할 상식사전(+협업)"
 author: "박찬엽"
 date: "2018년 10월 19일"
 output:
@@ -21,11 +21,15 @@ options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(cache = T, fig.height = 5)
 library(tidyverse)
 library(nycflights13)
+library(DBI)
+library(dplyr)
+library(tibble)
+library(lubridate)
 ```
 
 class: center, middle, title-slide, 
 
-## redshift를 항해할 때 알아야할 상식사전(+협업)
+## R과 redshift를 항해할 때 알아야할 상식사전(+협업)
 
 ### <https://mrchypark.github.io/datetimeR>
 
@@ -42,14 +46,13 @@ class:
 .pull-left[
 1. 발표자 소개
 
-2. redshift 라는 DB를 항해해보자
-3. 
-    
-3. [DBI](https://dbi.r-dbi.org/)와 함께 *dplyr*로 데이터 다루기
+2. R과 함께 redshift 라는 DB를 항해해보자
     - [RPostgres](https://github.com/r-dbi/RPostgres) vs [RPostgreSQL](https://github.com/tomoakin/RPostgreSQL)
+    - redshift 에서 schema
     
-4. 날짜 자료형을 다루는 [lubridate](https://github.com/tidyverse/lubridate)
+3. 날짜/시간 자료형
     - timezone 문제
+    - 날짜 더하기
 ]
 
 --
@@ -63,6 +66,7 @@ class:
   - [writexl](https://github.com/ropensci/writexl) vs [openxlsx](https://github.com/awalker89/openxlsx)
   - [googledrive](https://googledrive.tidyverse.org/)
   - [sendgridr](https://mrchypark.github.io/sendgridr/)
+  - [keyring](https://github.com/r-lib/keyring)
 ]
 
 ---
@@ -73,34 +77,129 @@ class: center, middle, title-slide,
 ## [발표자 소개][intro]
 
 ---
-코빗은 비트코인 거래소
+class: 
+<br>
+.pull-left[
+  .pull-right[
+<br>
+<br>
+<br>
+    ![](https://avatars2.githubusercontent.com/u/6179259?v=4&s=460)
+  ]
+]
+.pull-right[
+### 박찬엽     
+- .yellow[(현)]코빗 재무팀 데이터 담당자
+  * 재무DB 구축/관리 및 자동화
+- .gray[(전)]서울도시가스 선행연구팀 연구원
+  * 챗봇 엔진 개발 및 서버 구축
+- .gray[(전)]2017년 패스트 캠퍼스 데이터 분석 R 강의
+  * [데이터 분석을 위한 중급 R 프로그래밍](http://www.fastcampus.co.kr/data_camp_dabrp/)
+- N사 뉴스 크롤러 [N2H4](https://github.com/forkonlp/N2H4), D사 뉴스 크롤러 [DNH4](https://github.com/forkonlp/DNH4) 관리자
+  * [ForkonLP](https://forkonlp.github.io/) 프로젝트
+  
+
+- .blue[**FACEBOOK**]@[mrchypark](https://www.facebook.com/mrchypark)
+- .gray[**GITHUB**]@[mrchypark](https://github.com/mrchypark)
+]
+---
+class: 
+
+블로그를 운영하고 있습니다.
+
+[<img src="https://user-images.githubusercontent.com/6179259/44062214-660e0516-9f96-11e8-8485-45c6b311639c.png" width=100%>](https://mrchypark.github.io/)
 
 ---
-분석용 DW로 redshift를 사용하고 있음
+class: 
+
+열심히 R 생태계에 기여하고 있습니다.
+
+<img src="https://user-images.githubusercontent.com/6179259/44060543-fb3e0638-9f8f-11e8-8665-04a3705c2427.png" width=100%>
 
 ---
-R의 dplyr 로 db read가 됬던거 같은데?!
+class: 
+
+github 활동 많이 해주세요!
+
+[<img src="https://user-images.githubusercontent.com/6179259/44060662-54345012-9f90-11e8-86e9-e5292b48770e.png" width=100%>](http://git-awards.com/users?country=south+korea&language=r)
 
 ---
-dplyr의 가독성을 포기할 수 없었음
+class: 
+
+### [.blue[forkonlp]](https://forkonlp.github.io/)     
+  - [N2H4](https://github.com/forkonlp/N2H4) : 댓글 수집이 가능한 네이버 뉴스 크롤러
+  - [DNH4](https://github.com/forkonlp/DNH4) : 댓글 수집이 가능한 다음 뉴스 크롤러 
+  - [presidentSpeechKr](https://github.com/forkonlp/presidentSpeechKr) : 대통령 연설문
+  - [stdkor](https://github.com/forkonlp/stdkor) : 표준국어대사전 텍스트 자료
+
+### [.yellow[개인]](https://mrchypark.github.io/about)  
+  - [sendgridr](https://github.com/mrchypark/sendgridr) : 메일 전송 서비스 sendgrid api 패키지
+  - [ubci](https://github.com/mrchypark/ubci) : 업비트 거래소 인덱스&시세 데이터 
+  - [tqk](https://github.com/mrchypark/tqk) : 한국 주식 데이터
+  - [krlift](https://github.com/mrchypark/krlift) : 한국 승강기 현황 데이터
+  - [krlandprice](https://github.com/mrchypark/krlandprice) : 한국 표준공시지가 데이터
+---
+class: center, middle, title-slide, 
+
+# .pen-p[잘 부탁드립니다.]
 
 ---
-문제 
+class: center
+## 코빗은 비트코인 거래소
 
-연결할 수 있는가?
-
----
-aws의 공식 문서는 jdbc를 안내함
-
+<img src = https://user-images.githubusercontent.com/6179259/47186564-e7e05400-d36b-11e8-892b-6c42e1d1be64.png width=70%>
 
 ---
-jdbc 의 단점
+class: center
+## 분석용 DW로 redshift를 사용하고 있음
 
-1. java 설치
-1. 숫자와 문자로만 자료형 제공
-1. bigint 의 부정확성
+<img src=https://user-images.githubusercontent.com/6179259/47186617-1a8a4c80-d36c-11e8-89f3-b3dce9b64c8c.png width=60%>
 
 ---
+class: center, middle, title-slide,
+## R의 dplyr 로 db 다루는게 된다고 한거 같은데?!
+
+---
+
+## dplyr의 가독성을 포기할 수 없었음
+
+```{r include=FALSE}
+library(RSQLite)
+library(nycflights13)
+
+conn <- dbConnect(SQLite())
+
+copy_to(conn
+        , flights
+        , temporary = FALSE
+        , name = 'flights')
+```
+
+```{r}
+tbl(conn, 'flights') %>%
+  group_by(tailnum) %>%
+  summarise(count=n(),
+            mean_distance = mean(distance, na.rm = TRUE),
+            total_distance = sum(distance, na.rm = TRUE)) %>%
+  filter(!is.na(tailnum)) 
+```
+
+```{r include=FALSE}
+DBI::dbDisconnect(conn)
+```
+
+---
+class: center, middle, title-slide,
+## 걱정하지 마 미래의 나야, 훗!
+
+<img src=https://user-images.githubusercontent.com/6179259/47187188-31ca3980-d36e-11e8-87f3-fe297d9ef50f.png width=60%>
+
+---
+class: center, middle, title-slide,
+## 연결할 수 있는가?
+
+---
+
 class: center, middle, title-slide, 
 
 ## R `r anicon::faa("heart", animate="bounce", color="red")` Database
@@ -116,8 +215,7 @@ class:
 - bigquery
 - Oracle
 - ...
-]
-.pull-right[
+
 ## +noDBI .small[supported]
 
 - MongoDB
@@ -128,8 +226,8 @@ class:
 - ...
 
 ]
-
 --
+.pull-right[
 ## + sergeant .small[(with Apache Drill)]
 
 - HBase
@@ -139,118 +237,29 @@ class:
 - Amazon S3
 - ...
 
+## + JDBC & ODBC
+
+]
 
 
 ---
-DBI 
+
+## aws의 공식 문서는 jdbc를 안내함
+
+<img width=100% src=https://user-images.githubusercontent.com/6179259/47187330-9f766580-d36e-11e8-9744-a3ccc269a6b8.png>
+
 
 ---
-RPostgreSQL
+## jdbc 의 단점
 
-1. ssl 등 보안 연결 지원 미흡
-
-큰 단점
-
----
-RPostgres
-
-1. postgres 팀의 표준 라이브러리(libpq) 사용 
-1. DBI 패키지 관리 팀이 함께 지원 관리
-1. 연결 풀 및 메모리 자동 관리
-
----
-연결
-
-```
-conn <- dbConnect(RPostgres::Postgres(),
-               host = host,
-               port = port,
-               user = user,
-               password = password,
-               dbname = dbname,
-               sslmode='require')
-
-```
-
----
-연결 성공! 했지만
-
----
-테이블이 없다?!
-```r
-dbListTables(conn)
-```
-```
-character(0)
-```
-
----
-스키마를 통해 권한 관리
-
-실제 스키마가 뭔지는 잘 모르겠지만
-
-현재는 폴더 같은 역할을 수행
-
----
-스키마 내의 테이블을 보는 방법을 찾아보니 쿼리문이 있음
-전부 R로 하려고 고집 부리지 않는다.
-
-```
-dbGetQuery("SELECT * FROM information_schema.tables WHERE table_schema = 'public'")
-```
-
----
-테이블 불러오기
-
-```r
-tbl(con, "table_name")
-tbl(con, "schema.table_name")
-```
-```
-Error in result_create(conn@ptr, statement) : 
-  Failed to prepare query: ERROR:  relation "table_name" does not exist
-```
-
----
-schema.table_name로 테이블을 불러오기 위해서는
-
-```r
-tbl(con, sql("select * from schema.table_name"))
-```
-
----
-dbplyr 패키지
-
-다른 좋은 함수가 많겠지만!
-
-in_schema 명령어 지원
-
-```r
-tbl(con, in_schema("schema", "table_name"))
-```
-
----
-이제 dplyr 을 잘 사용하면 되는건가?
-
----
-코빗은 암호화폐 거래소
-24시간 운영
-
----
-재무팀이 결산할 때 시간이 매우 중요하다.
-
----
-재무팀의 시간 일단위 결산 마감
-
----
-거래 발생 시점 vs 지갑 기록 시점
-
----
-타임존
-redshift는 모두 UTC 기준
-거래소가 외국인도 있어서 UTC를 기준으로 시간을 기록
-
----
+1. java 설치
+    * 현재 버전의 rJava는 경로 문제가 해결되었습니다.
+    
+1. 숫자와 문자로만 자료형 제공
+    - 날짜, 논리형, 시간 등 모두 문자 자료형으로 제공
+    
+1. 정밀도가 떨어짐.
+    - 예를 들어 922337203685477580**7**를 922337203685477580**8**로 리턴해줌
 
 
 
@@ -262,71 +271,141 @@ class: center, middle, title-slide,
 ![](https://d33wubrfki0l68.cloudfront.net/738885c8f54f3ab6118545469c28cd6635fcd656/96e0d/homepage/interact.png)
 
 ---
-class: 
+class: center, middle, title-slide, 
 
-## redshift에 연결해보자
+## [RPostgreSQL](https://github.com/tomoakin/RPostgreSQL) & [RPostgres](https://github.com/r-dbi/RPostgres)
+
+---
+
+## RPostgreSQL
+
+1. ssl 등 보안 연결 지원 미흡
+
+--
+
+## 회사에서 사용하기 어려움...
+
+---
+## RPostgres
+
+1. postgres 팀의 표준 라이브러리(libpq) 사용 
+1. DBI 패키지 관리 팀이 함께 지원 관리
+1. 연결 풀 및 메모리 자동 관리
+
+---
+## 연결해 보자
 
 ```r
-# install.packages("remotes")
-# remotes::install_github("r-dbi/RPostgres")
-library(keyring)
 library(DBI)
-con <- dbConnect(Postgres(),
-                 user = user,
-                 password = key_get(pw_id),
-                 host = host,
-                 port = port,
-                 dbname = "dbname")
+conn <- dbConnect(RPostgres::Postgres(), # 그대로 사용
+               host = host,              # redshift의 endpoint 주소
+               port = port,              # 사용하는 port redshift는 기본값이 5439
+               user = user,              # DB 계정(소위 ID)
+               password = password,      # 비밀 번호
+               dbname = dbname,          # 필수 아님. redshift에 기본 db가 표시됨
+               sslmode='require'         # 암호 연결 요구
+               )
+
 ```
+
 ---
-class: 
+class: center, middle, title-slide, 
+## 연결 성공! 했지만
 
-## 데이터 소스로서 DBI
+---
+## 테이블이 없다?!
+```r
+dbListTables(conn)
+```
+```
+## character(0)
+```
 
-DBI 패키지가 연결하는 database의 연결정보를 바탕으로 dplyr 문법을 사용할 수 있습니다. 그렇게 하기 위해서는 dbplyr 패키지가 필요합니다.
+---
+## 스키마를 통해 권한 관리
 
+~~실제 스키마가 뭔지는 잘 모르겠지만~~ 폴더 같은 역할을 수행(postgres)
+.center[
+<img width=60% src=https://user-images.githubusercontent.com/6179259/47187898-d188c700-d370-11e8-8b45-07ca73cedae1.png>
+]
+
+---
+
+## 스키마 내의 테이블 리스트를 가져오는 법
+
+postgres에서 스키마 내의 테이블을 보는 방법을 찾아보니 쿼리문이 있음
+
+```r
+dbGetQuery("SELECT * FROM information_schema.tables WHERE table_schema = 'public'")
+```
+
+--
+*전부 R로 하려고 고집 부리지 않는다*
+
+---
+## redshift에서 스키마 내의 테이블 불러오기
+
+테이블 명으로 dplyr의 tbl 형으로 찾을 수 없다고 출력
+
+```r
+tbl(con, "table_name")
+```
+```
+## Error in result_create(conn@ptr, statement) : 
+##   Failed to prepare query: ERROR:  relation "table_name" does not exist
+```
+--
+schema.table_name 형태로 스키마를 선언해줘도 같은 문제 발생
+
+```r
+tbl(con, "schema.table_name")
+```
+```
+## Error in result_create(conn@ptr, statement) : 
+##   Failed to prepare query: ERROR:  relation "schema.table_name" does not exist
+```
+
+
+---
+
+## schema.table_name로 테이블 지정
+
+`sql()` 함수를 이용해서 쿼리한 테이블을 연결해줘야 함.
+
+```r
+tbl(con, sql("select * from schema.table_name"))
+```
+
+---
+## dbplyr 패키지
+
+~~다른 좋은 함수가 많겠지만!~~ in_schema 명령어 지원
 ```{r}
 if (!requireNamespace("dbplyr")) install.packages("dbplyr")
 library(dbplyr)
 ```
+```r
+tbl(con, in_schema("schema", "table_name"))
+```
 
 ---
-class: 
-# R 데이터를 DB 테이블로 만들기 copy_to()
+## dplyr에서 유용한 함수
+### collect()
 
-copy_to()는 DBI의 dbWriteTable()과 같은 기능을 수행. dplyr 패키지에 속한 copy_to()는 성능 개선을 통해 dbWriteTable() 보다 빠른 속도를 제공함
-
-```{r}
+collect()는 DB에 전달하는 명령의 최종 결과를 R 객체로 가져오는 역할을 수행
+```{r include=FALSE}
 library(RSQLite)
 library(nycflights13)
 
-conn <- dbConnect(SQLite(),
-                  ":memory:")
+conn <- dbConnect(SQLite())
 
 copy_to(conn
         , flights
-        , name = 'flights'
-        , overwrite = T)
-dbListTables(conn)
-```
-
----
-class: 
-## 테이블의 연결정보를 R 객체에 저장 - tbl()
-
-dbplyr과 DBI, dplyr로 데이터베이스의 테이블을 dplyr 문법으로 다루기 위해서는 DBI 패키지에서 conn 객체와 같이 테이블의 연결정보를 담고 있는 R 객체가 필요. tbl()는 DB내 테이블 연결정보를 R 객체로 만드는 함수
-
-```{r}
+        , temporary = FALSE
+        , name = 'flights')
 tb_flights <- tbl(conn, "flights")
 tb_flights
 ```
-
----
-class: 
-### collect()
-
-collect()는 DB에 전달하는 명령의 최종 결과를 R 객체로 가져오는 역할을 수행합니다.
-
 .pull-left[
 ```r
 tb_flights %>%
@@ -360,6 +439,10 @@ tb_flights %>%
   collect()
 ```
 ]
+
+```{r include=FALSE}
+DBI::dbDisconnect(conn)
+```
 ---
 
 class: 
@@ -386,47 +469,79 @@ FROM (SELECT `TBL_LEFT`.`tailnum` AS `tailnum`, `TBL_LEFT`.`count` AS `count`, `
 )
 ORDER BY `total_distance` DESC)
 ```
----
-class: 
-
-## 역시 패키지는 배신한다 .small[(aka 오해)]
-
----
-class: 
-
-## 숫자 자료형이 늘어났다!?
-
-### integer64
-
----
-class: 
-
-## numeric
-
-base R의 숫자 자료형
-
----
-class: 
-
-## 모던 R 패키지에서는
-
-tibble 내의 dbl, integer, integer64
-
 
 ---
 class: center, middle, title-slide, 
 
+## 이제 dplyr을 잘 사용하면 되는건가?
+
+---
+class: center, middle, title-slide, 
 ## 거래소는 24시간이 .yellow[모자라]
+
+---
+<br>
+.pull-left[
+  .pull-right[
+<br>
+<br>
+<br>
+    ![](https://avatars2.githubusercontent.com/u/6179259?v=4&s=460)
+  ]
+]
+.pull-right[
+### 박찬엽     
+- .yellow[(현)]코빗 **재무팀** 데이터 담당자
+
+.small[
+.gray[
+- (전)서울도시가스 선행연구팀 연구원
+  * 챗봇 엔진 개발 및 서버 구축
+- (전)2017년 패스트 캠퍼스 데이터 분석 R 강의
+  * [데이터 분석을 위한 중급 R 프로그래밍](http://www.fastcampus.co.kr/data_camp_dabrp/)
+- N사 뉴스 크롤러 [N2H4](https://github.com/forkonlp/N2H4), D사 뉴스 크롤러 [DNH4](https://github.com/forkonlp/DNH4) 관리자
+  * [ForkonLP](https://forkonlp.github.io/) 프로젝트
+
+
+- **FACEBOOK**@[mrchypark](https://www.facebook.com/mrchypark)
+- **GITHUB**@[mrchypark](https://github.com/mrchypark)
+]
+]
+]
+
+---
+class: center, middle, title-slide, 
+## 재무팀의 시간 
+
+## 일단위(.blue[daily]) 데이터 처리
+
+---
+## 시간이 매우 중요하다.
+
+1. 여러 테이블들의 관계에서 기준 시간을 정해야 함.
+    - 수많은 created_at과 updated_at 사이에서 찾아야...
+1. timezone 확인
+    - 외국인 등 이유로 UTC(협정 세계시) 사용
+1. 거래 취소 등이 나중에 발생하기도 함
+    - 18일에 확인한 17일 값과 19일에 확인한 17일 값이 다를 수 있음
 
 ---
 class: 
 
-## 날짜 자료형이 어려워서 사실
+## 날짜/시간 자료형이 어려워서
+
+year, month, day 같이 컬럼별로 쪼개 두기도 함
 
 ```{r}
 library(nycflights13)
 flights
 ```
+---
+class: center, middle, title-slide, 
+## 날짜/시간 자료형
+
+**잘** 만들어진 시스템을 **잘** 사용해보자
+
 ---
 class: 
 
@@ -457,8 +572,10 @@ class:
 
 ## Timezones in base R
 
+UTC 그런거 없음
+
 ```{r}
-x <- "2018-01-01 06:00:00"
+x <- "2018-01-01 06:00:00 UTC"
 as.POSIXct(x)
 as.POSIXct(x, tz = "Asia/Seoul")
 Sys.timezone()
@@ -469,28 +586,68 @@ Sys.time()
 
 class: 
 
-## 우리의 DB는 UTC
+## redshift는 UTC가 기본
 
-데이터 베이스에서 가져온 날짜를 as.Date
+postgres로 실습 환경 구성
 
+```{r}
+library(DBI)
+library(dplyr)
+library(tibble)
+library(lubridate)
+
+con <- dbConnect(RPostgres::Postgres(),
+                 host = '192.168.99.100',
+                 port = 5432,
+                 user = 'postgres',
+                 password = '1q2w3e')
+
+dtdata <- as.character(Sys.time()+sample(1:1000000,10))
+dtdata <- tibble(time = dtdata) %>% 
+  mutate(time = as_datetime(time)) # lubridate::as_datetime() UTC 시간을 만들어 줌
+
+copy_to(con, dtdata, overwrite =T)
+dbListTables(con)
 ```
-코드와 결과 예시
-```
-
 ---
-class: center, middle, title-slide, 
+## as.Date 함수의 역습
+
+```{r}
+tbl(con, "dtdata") %>% 
+  mutate(add = time %+ interval% '9 hours') %>% 
+  collect() %>% 
+  mutate(date = as.Date(time),
+         datez = as.Date(time, tz ="Asia/Seoul"),
+         add9 = as.Date(add),
+         add9z = as.Date(add, tz ="Asia/Seoul"))
+```
+
+```{r include=FALSE}
+DBI::dbDisconnect(conn)
+```
+---
 
 ## 헷갈리기 딱 좋음
 
-
+1. `as.Date()` 함수가 알아서 UTC(?)로 되돌려 놓음.
+    - 기본 R에서의 동작과 다름
+    
+1. `time %+ interval% '9 hours'` 같은 DB쪽 문법을 사용해야 함.
+    - `time + hour(9)` 같은거 알아서 바꿔주지 않음 ~~ㅜㅠ~~
+    - dplyr::mutate의 소스가 db_con 일 경우 글자 수준으로 sql 문에 전달
+    - redshift는 `convert_timezone()` 함수를 지원함
+    - `convert_timezone(time, "kst")` 같은 문법이 가능함
 
 ---
 class: 
 
 ## 느낀 점
 
-- 역시 삽질
-- ...
+- **역시 공짜 점심은 없다**
+- 어느 정도 각 DB 특성에 맞는 지식을 알고 있어야
+- 날짜/시간 자료형은 어디서나 문제니 꼭 UTC 기준인지 확인 필요
+- timezone 단위로 단위로 처리하는 것이 추상화된 해결책
+- 다행히 인코딩 문제는 익숙한데... UTF-8을 확인하는 것이 중요 포인트
 
 ---
 class: center, middle, title-slide, 
@@ -500,7 +657,7 @@ class: center, middle, title-slide,
 ---
 class: 
 
-## 엑셀로 저장하기
+## csv 대신 엑셀로 저장하기 - writexl
 
 ```r
 library(openxlsx)
@@ -515,25 +672,39 @@ microbenchmark(
   openxlsx = openxlsx::write.xlsx(flights, tempfile()),
   times = 3
 )
+```
+```
+## Unit: seconds
+##      expr       min        lq      mean    median        uq       max neval
+##   writexl  8.884712  8.904431  9.103419  8.965643  9.041565  9.720743     5
+##  openxlsx 17.166818 18.072527 19.171003 18.669805 18.756661 23.189206     5
+```
+```r
 writexl::write_xlsx(flights, tmp1 <- tempfile())
 file.info(tmp1)$size
+## 29157282
 openxlsx::write.xlsx(flights, tmp2 <- tempfile())
 file.info(tmp2)$size
+## 35962067
 ```
 ---
 class: 
 
 ## 구글 드라이브
 
-엑셀 파일 업로드 / 데이터 소스로써 googledrive
+엑셀 파일 업로드
 
 ```r
 library(googledrive)
 drive_upload(media = "what_you_want_to_upload_file", 
              name = "name_of_upload_file",
-             path = "where_to_upload")
+             path = as_id("where_to_upload"))
 
 ```
+
+.center[
+![](https://user-images.githubusercontent.com/6179259/47189511-e7e65100-d377-11e8-8a72-4c20245f7e99.png)
+]
 
 ---
 class: 
@@ -543,15 +714,6 @@ class:
 rmd로 작성한 보고서 전송
 
 구글에서 이미지를 제거해서 임시로 html을 첨부하는 형태로 우회중
-
-```{r}
-library(sendgridr)
-mail() %>% 
-  from("your@mail.com") %>% 
-  to("where@togo.com") %>% 
-  subject("mail title") %>% 
-  content("mail body")
-```
 
 
 ```r
@@ -563,6 +725,32 @@ mail() %>%
   attachments("what_you_want_to_upload_file") %>% 
   send()
 ```
+
+---
+## 보안을 위해 keyring
+
+windows의 자격증명관리자, mac의 Keychain 을 이용해 비밀 번호 등을 암호화 저정후 활용
+
+깃헙등에 잘못 올릴 일이 없음
+
+```r
+keyring::key_set("key-name-to-use")
+con <- dbConnect(RPostgres::Postgres(),
+                 host = '192.168.99.100',
+                 port = 5432,
+                 user = 'postgres',
+                 password = keyring::key_get("key-name-to-use"))
+```
+
+---
+class: center, middle, title-slide, 
+
+## Q & A
+
+--
+
+## .pen-b[감사합니다]
+
 
 [1]: https://github.com/tidyverse/tidyverse
 [2]: https://mrchypark.github.io/kisa_finR
