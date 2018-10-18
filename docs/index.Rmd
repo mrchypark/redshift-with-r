@@ -31,10 +31,10 @@ class: center, middle, title-slide,
 
 ## R과 redshift를 항해할 때 알아야할 상식사전(+협업)
 
-### <https://mrchypark.github.io/datetimeR>
+### <https://mrchypark.github.io/redshift-with-r>
 
-#### [[pdf버전]](https://github.com/mrchypark/datetimeR/blob/master/docs/datetimeR.pdf) [[문의하기]](http://pf.kakao.com/_RXANd) [[의견 및 오류 신고]](https://github.com/mrchypark/datetimeR/issues/new)
-#### [스타누르기](https://github.com/mrchypark/datetimeR)는 컨텐츠 제작자를 춤추게 합니다.
+#### [[pdf버전]](https://github.com/mrchypark/redshift-with-r/blob/master/docs/redshift-with-r.pdf) [[문의하기]](http://pf.kakao.com/_RXANd) [[의견 및 오류 신고]](https://github.com/mrchypark/redshift-with-r/issues/new)
+#### [스타누르기](https://github.com/mrchypark/redshift-with-r)는 컨텐츠 제작자를 춤추게 합니다.
 
 ### 박찬엽
 
