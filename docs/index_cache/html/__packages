@@ -14,3 +14,9 @@ lubridate
 dbplyr
 RSQLite
 microbenchmark
+usethis
+data.table
+DBI
+aws.s3
+RPostgres
+redshiftTools
